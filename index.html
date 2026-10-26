@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>社交病诊断书 - 10种社交病你中了几种</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 24px;
+            animation: fadeIn 0.4s ease;
+        }
+        .page.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ========== 开始页 ========== */
+        .start-page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            background: 
+                radial-gradient(ellipse at top, rgba(167, 139, 250, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+        }
+        .start-page.active { display: flex; }
+        
+        .start-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 0 30px rgba(167, 139, 250, 0.5));
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        
+        .start-title {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+        
+        .start-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 6px;
+        }
+        
+        .start-slogan {
+            font-size: 15px;
+            color: #f9a8d4;
+            margin-bottom: 36px;
+            font-weight: 500;
+        }
+        
+        .start-stats {
+            display: flex;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+        .stat-item { text-align: center; }
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+        }
+        
+        .start-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            width: 100%;
+            max-width: 320px;
+            text-align: left;
+        }
+        .start-card-title {
+            font-size: 14px;
+            color: #f9a8d4;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .start-card ul { list-style: none; }
+        .start-card li {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            padding: 5px 0;
+            padding-left: 18px;
+            position: relative;
+        }
+        .start-card li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            font-size: 12px;
+        }
+        
+        .start-btn {
+            width: 100%;
+            max-width: 320px;
+            padding: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 4px;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.5);
+            transition: all 0.2s ease;
+        }
+        .start-btn:active { transform: scale(0.96); }
+        
+        .start-footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+        
+        /* ========== 答题页 ========== */
+        .quiz-page {
+            background: 
+                radial-gradient(ellipse at top, rgba(167, 139, 250, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+            min-height: 100vh;
+        }
+        
+        .quiz-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .quiz-hospital {
+            font-size: 13px;
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+        .quiz-patient {
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+        }
+        .patient-id {
+            font-family: monospace;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+        
+        .question-num {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+        .question-num .current {
+            color: #f9a8d4;
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            color: #fff;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 16px 18px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.85);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            line-height: 1.5;
+            font-family: inherit;
+            position: relative;
+        }
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: transparent;
+            border-radius: 4px 0 0 4px;
+            transition: background 0.2s ease;
+        }
+        .option:active {
+            background: rgba(139, 92, 246, 0.25);
+            border-color: rgba(167, 139, 250, 0.5);
+            transform: scale(0.98);
+        }
+        .option:active::before {
+            background: linear-gradient(180deg, #8b5cf6, #ec4899);
+        }
+        
+        /* ========== 结果页 ========== */
+        .result-page {
+            background: 
+                radial-gradient(ellipse at top, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+            min-height: 100vh;
+            display: none;
+        }
+        .result-page.active { display: block; }
+        
+        .diagnosis-header {
+            text-align: center;
+            margin-bottom: 22px;
+            padding: 28px 20px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            position: relative;
+        }
+        .diagnosis-header::before {
+            content: '🔬 诊断结果';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 3px 16px;
+            font-size: 12px;
+            color: #fff;
+            letter-spacing: 2px;
+            font-weight: 600;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .result-emoji {
+            font-size: 72px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 25px rgba(167, 139, 250, 0.4));
+        }
+        
+        .result-type {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+        
+        .result-latin {
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            font-style: italic;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        
+        .result-severity {
+            display: inline-block;
+            padding: 5px 14px;
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            color: #f9a8d4;
+            font-weight: 600;
+        }
+        
+        .result-quote {
+            font-size: 13px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.75);
+            margin: 18px 0;
+            padding: 14px 16px;
+            border-left: 3px solid #ec4899;
+            background: rgba(236, 72, 153, 0.08);
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+        }
+        
+        .severity-meter {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .severity-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .severity-label .value {
+            color: #f9a8d4;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .severity-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .severity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #f472b6);
+            border-radius: 5px;
+            transition: width 1.5s ease;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        }
+        .severity-ticks {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 6px;
+        }
+        
+        .other-diseases {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+        }
+        .diseases-title {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+        .diseases-title::before { content: '💊'; }
+        .disease-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .disease-tag {
+            padding: 5px 12px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #c4b5fd;
+        }
+        .disease-tag.mild {
+            background: rgba(251, 191, 36, 0.12);
+            border-color: rgba(251, 191, 36, 0.25);
+            color: #fde047;
+        }
+        
+        /* 付费层 */
+        .paywall-section {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 18px;
+            padding: 24px 20px;
+            position: relative;
+            margin-top: -4px;
+        }
+        .paywall-section::before {
+            content: '🔥 限时特价';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            padding: 4px 18px;
+            font-size: 11px;
+            color: #fff;
+            letter-spacing: 2px;
+            font-weight: 700;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+        
+        .paywall-title {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            margin-top: 6px;
+            color: #fff;
+        }
+        .paywall-sub {
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
+        }
+        
+        .paywall-list {
+            list-style: none;
+            margin-bottom: 16px;
+        }
+        .paywall-list li {
+            padding: 8px 0;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .paywall-list li:last-child { border-bottom: none; }
+        .paywall-list li::before {
+            content: '✓';
+            font-size: 14px;
+            color: #4ade80;
+            font-weight: 700;
+        }
+        
+        .price-box {
+            background: rgba(0,0,0,0.15);
+            border: 1px dashed rgba(251, 191, 36, 0.35);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .price-old {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 4px;
+        }
+        .price-old del { color: rgba(255,255,255,0.5); font-size: 14px; }
+        .price-old .reason {
+            color: #fca5a5;
+            font-size: 11px;
+            margin-left: 6px;
+        }
+        .price-now {
+            font-size: 40px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            filter: drop-shadow(0 2px 10px rgba(251, 191, 36, 0.3));
+        }
+        .price-now .yuan { font-size: 18px; }
+        .price-desc {
+            font-size: 11px;
+            color: #fcd34d;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .unlock-btn {
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 4px;
+            font-family: inherit;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .unlock-btn::after {
+            content: '手慢无';
+            position: absolute;
+            top: 6px;
+            right: 12px;
+            font-size: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .unlock-btn:active { transform: scale(0.96); }
+        
+        .paywall-note {
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 12px;
+        }
+        
+        /* ========== 完整报告 ========== */
+        .full-report {
+            background: 
+                radial-gradient(ellipse at bottom, rgba(167, 139, 250, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+            min-height: 100vh;
+            display: none;
+        }
+        .full-report.active { display: block; }
+        
+        .report-top {
+            text-align: center;
+            padding: 28px 20px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            margin-bottom: 18px;
+            position: relative;
+        }
+        .report-top::before {
+            content: '📋 确诊报告';
+            position: absolute;
+            top: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 3px 16px;
+            font-size: 12px;
+            color: #fff;
+            letter-spacing: 3px;
+            font-weight: 600;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .report-section {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+        .report-section h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #c4b5fd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .report-section h3::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(180deg, #8b5cf6, #ec4899);
+            border-radius: 2px;
+        }
+        .report-section p {
+            font-size: 13px;
+            line-height: 1.9;
+            color: rgba(255,255,255,0.75);
+        }
+        .report-section ul {
+            padding-left: 18px;
+        }
+        .report-section li {
+            font-size: 13px;
+            line-height: 2;
+            color: rgba(255,255,255,0.75);
+        }
+        
+        .match-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .match-card {
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .match-card.good {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+        }
+        .match-card.bad {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+        .match-emoji { font-size: 32px; margin-bottom: 6px; }
+        .match-name { font-size: 13px; font-weight: 600; color: #fff; }
+        .match-label { font-size: 10px; margin-top: 4px; letter-spacing: 1px; }
+        .good .match-label { color: #4ade80; }
+        .bad .match-label { color: #f87171; }
+        .match-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.5; }
+        
+        .prescription {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px dashed rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .prescription-title {
+            font-size: 13px;
+            color: #fbbf24;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .prescription-title::before { content: '💊'; }
+        
+        .stamp {
+            position: absolute;
+            bottom: 14px;
+            right: 14px;
+            width: 65px;
+            height: 65px;
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #c4b5fd;
+            transform: rotate(-12deg);
+            opacity: 0.6;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .replay-btn {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 16px;
+            font-family: inherit;
+            letter-spacing: 2px;
+            transition: all 0.2s ease;
+        }
+        .replay-btn:active { 
+            background: rgba(255,255,255,0.12);
+            transform: scale(0.98);
+        }
+        
+        .footer-disclaimer {
+            text-align: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+            margin-top: 22px;
+            line-height: 1.6;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 开始页 -->
+    <div id="startPage" class="page start-page active">
+        <div class="start-emoji">🧠</div>
+        <h1 class="start-title">社交病诊断书</h1>
+        <p class="start-subtitle">10种社交病，你中了几种？</p>
+        <p class="start-slogan">当代年轻人社交现状检测</p>
+        
+        <div class="start-stats">
+            <div class="stat-item">
+                <div class="stat-num">20</div>
+                <div class="stat-label">道题</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">3分钟</div>
+                <div class="stat-label">完成</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">10种</div>
+                <div class="stat-label">社交病</div>
+            </div>
+        </div>
+        
+        <div class="start-card">
+            <div class="start-card-title">以下症状你中了几条？</div>
+            <ul>
+                <li>能打字绝不打电话</li>
+                <li>路上见熟人绕道走</li>
+                <li>聚会前焦虑三天</li>
+                <li>外卖备注比论文认真</li>
+                <li>群聊常年潜水只看不发</li>
+            </ul>
+        </div>
+        
+        <button class="start-btn" onclick="startQuiz()">
+            开 始 诊 断 →
+        </button>
+        
+        <p class="start-footer">🎮 趣味测试 · 仅供娱乐</p>
+    </div>
+    
+    <!-- 答题页 -->
+    <div id="quizPage" class="page quiz-page">
+        <div class="quiz-header">
+            <div class="quiz-hospital">🧠 社交病检测</div>
+            <div class="quiz-patient">编号 <span class="patient-id">NO.20261026</span></div>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        
+        <div class="question-num">
+            第 <span class="current" id="currentNum">01</span> / 20 题
+        </div>
+        
+        <div class="question-text" id="questionText"></div>
+        
+        <div class="options" id="optionsContainer"></div>
+    </div>
+    
+    <!-- 结果页 -->
+    <div id="resultPage" class="page result-page">
+        <div class="diagnosis-header">
+            <div class="result-emoji" id="resultEmoji">☠️</div>
+            <div class="result-type" id="resultType">社交失语症</div>
+            <div class="result-latin" id="resultLatin">Social Aphasia</div>
+            <div class="result-severity" id="resultSeverity">重度 · 晚期</div>
+        </div>
+        
+        <div class="result-quote" id="resultQuote">
+            「不是不想说话，是真的不知道说什么。每次社交都像在裸奔，只想找个地缝钻进去。」
+        </div>
+        
+        <div class="severity-meter">
+            <div class="severity-label">
+                <span>社恐指数</span>
+                <span class="value" id="severityValue">92%</span>
+            </div>
+            <div class="severity-bar">
+                <div class="severity-fill" id="severityFill" style="width: 0%"></div>
+            </div>
+            <div class="severity-ticks">
+                <span>正常</span>
+                <span>轻度</span>
+                <span>中度</span>
+                <span>重度</span>
+                <span>晚期</span>
+            </div>
+        </div>
+        
+        <div class="other-diseases">
+            <div class="diseases-title">你可能还患有：</div>
+            <div class="disease-tags" id="comorbidities">
+                <span class="disease-tag mild">电话恐惧症</span>
+                <span class="disease-tag">对视逃避症</span>
+                <span class="disease-tag mild">外卖备注依赖症</span>
+            </div>
+        </div>
+        
+        <div class="paywall-section">
+            <div class="paywall-title">解锁完整诊断报告</div>
+            <div class="paywall-sub">深度分析你的社交病，附带治疗处方</div>
+            
+            <ul class="paywall-list">
+                <li>病因深度解析（500字+）</li>
+                <li>临床表现 & 典型症状</li>
+                <li>你的社交免疫力评级</li>
+                <li>专属治疗处方（7条）</li>
+                <li>最佳病友 & 避雷人群</li>
+                <li>病情稀有度排名</li>
+                <li>传染风险评估</li>
+            </ul>
+            
+            <div class="price-box">
+                <div class="price-old">
+                    原价 <del>¥2.99</del>
+                    <span class="reason">新用户福利</span>
+                </div>
+                <div class="price-now"><span class="yuan">¥</span>0.5</div>
+                <div class="price-desc">原 ¥2.99 完整报告 · 现在只要 0.5 元</div>
+            </div>
+            
+            <button class="unlock-btn" onclick="showFullReport()">
+                💰 立 即 解 锁
+            </button>
+            <p class="paywall-note">限时0.5元 · 随时恢复原价 · 不满意包退</p>
+        </div>
+    </div>
+    
+    <!-- 完整报告页 -->
+    <div id="fullReportPage" class="page full-report">
+        <div class="report-top">
+            <div class="result-emoji" id="fullEmoji">☠️</div>
+            <div class="result-type" id="fullType">社交失语症</div>
+            <div class="result-latin" id="fullLatin">Social Aphasia</div>
+            <div class="result-severity" id="fullSeverity">重度 · 晚期</div>
+            <div class="stamp">已确诊<br>CONFIRMED</div>
+        </div>
+        
+        <div class="report-section">
+            <h3>病 因 分 析</h3>
+            <p id="fullDesc"></p>
+        </div>
+        
+        <div class="report-section">
+            <h3>临 床 表 现</h3>
+            <ul id="fullSymptoms"></ul>
+        </div>
+        
+        <div class="report-section">
+            <h3>你 的 优 势</h3>
+            <p style="font-size:12px; color:rgba(255,255,255,0.5); margin-bottom:8px;">别灰心，社恐也有社恐的优点</p>
+            <ul id="fullAdvantages"></ul>
+        </div>
+        
+        <div class="prescription">
+            <div class="prescription-title">治 疗 处 方</div>
+            <ul id="fullPrescription"></ul>
+        </div>
+        
+        <div class="report-section" style="margin-top: 14px;">
+            <h3>病 友 匹 配</h3>
+            <div class="match-section">
+                <div class="match-card good">
+                    <div class="match-emoji" id="bestEmoji">🗣️</div>
+                    <div class="match-name" id="bestName">社交话痨症</div>
+                    <div class="match-label">最佳病友</div>
+                    <div class="match-desc" id="bestDesc">对方负责说，你负责听</div>
+                </div>
+                <div class="match-card bad">
+                    <div class="match-emoji" id="worstEmoji">☠️</div>
+                    <div class="match-name" id="worstName">另一个失语症</div>
+                    <div class="match-label">避雷组合</div>
+                    <div class="match-desc" id="worstDesc">两个人在一起，空气都会凝固</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-section">
+            <h3>病 情 档 案</h3>
+            <p id="fullRarity" style="margin-bottom: 6px;"></p>
+            <p id="fullContagion"></p>
+        </div>
+        
+        <button class="replay-btn" onclick="restartQuiz()">🔄 再测一次</button>
+        
+        <div class="footer-disclaimer">
+            本测试纯属娱乐<br>
+            觉得准就分享给病友一起测<br>
+            有病没病，开心最重要
+        </div>
+    </div>
+
+    <script>
+        var questions = [
+            {
+                q: "手机响了，是陌生号码，你的第一反应是？",
+                options: [
+                    { text: "秒接，喂你好哪位？", score: 5 },
+                    { text: "犹豫一下，接了再说", score: 4 },
+                    { text: "假装没听见，等它自己挂", score: 2 },
+                    { text: "直接挂断，能打字绝对不打电话", score: 1 }
+                ]
+            },
+            {
+                q: "远远看到认识但不熟的人走过来，你会？",
+                options: [
+                    { text: "老远就打招呼，热情寒暄", score: 5 },
+                    { text: "看对方反应，随机应变", score: 3 },
+                    { text: "低头玩手机装作没看见", score: 2 },
+                    { text: "立刻掉头绕路，或者躲进旁边店里", score: 1 }
+                ]
+            },
+            {
+                q: "在电梯里遇到不太熟的同事/邻居，你会？",
+                options: [
+                    { text: "主动搭话，一路聊到楼层", score: 5 },
+                    { text: "微笑点头示意一下", score: 3 },
+                    { text: "紧盯楼层数字，假装在思考", score: 2 },
+                    { text: "内心疯狂祈祷快点到，空气都凝固了", score: 1 }
+                ]
+            },
+            {
+                q: "周末朋友约你去一个全是陌生人的局，你？",
+                options: [
+                    { text: "冲啊！又能认识新朋友了", score: 5 },
+                    { text: "去也行，看心情", score: 3 },
+                    { text: "找个借口推掉，人多好累", score: 2 },
+                    { text: "收到消息的瞬间已经开始焦虑了", score: 1 }
+                ]
+            },
+            {
+                q: "聚会结束回到家，你的状态是？",
+                options: [
+                    { text: "意犹未尽，还想接着嗨", score: 5 },
+                    { text: "挺开心的，洗洗睡了", score: 4 },
+                    { text: "有点累，瘫着不想动", score: 2 },
+                    { text: "精疲力竭，需要独处三天回血", score: 1 }
+                ]
+            },
+            {
+                q: "开会/上课被点名叫你发言，你？",
+                options: [
+                    { text: "从容站起，滔滔不绝", score: 5 },
+                    { text: "有点紧张但能说清楚", score: 3 },
+                    { text: "大脑一片空白，磕磕巴巴", score: 2 },
+                    { text: "被点到名的瞬间，人已经没了", score: 1 }
+                ]
+            },
+            {
+                q: "在外面吃饭，想叫服务员加个水，你会？",
+                options: [
+                    { text: "直接喊：服务员！", score: 5 },
+                    { text: "等服务员路过时叫住", score: 3 },
+                    { text: "用眼神疯狂暗示", score: 2 },
+                    { text: "忍到吃完也不好意思开口", score: 1 }
+                ]
+            },
+            {
+                q: "发一条朋友圈，没人点赞，你？",
+                options: [
+                    { text: "无所谓，我发我的", score: 5 },
+                    { text: "偶尔看一眼，还好", score: 3 },
+                    { text: "隔几分钟刷一次，没人赞就删掉", score: 2 },
+                    { text: "几乎不发朋友圈，怕没人赞尴尬", score: 1 }
+                ]
+            },
+            {
+                q: "去到一个全新的环境（新班级/新公司），你？",
+                options: [
+                    { text: "当天就跟大家打成一片", score: 5 },
+                    { text: "一两天就能融入", score: 4 },
+                    { text: "要一周以上才能熟悉", score: 2 },
+                    { text: "到离职/毕业都没认全人", score: 1 }
+                ]
+            },
+            {
+                q: "朋友带了一个你完全不认识的人来，你？",
+                options: [
+                    { text: "马上自来熟，新朋友get", score: 5 },
+                    { text: "打个招呼，慢慢聊", score: 3 },
+                    { text: "有点拘谨，只跟朋友说话", score: 2 },
+                    { text: "全程尴尬，想找借口溜", score: 1 }
+                ]
+            },
+            {
+                q: "你更喜欢怎么度过休息日？",
+                options: [
+                    { text: "约一群人出去玩才叫休息", score: 5 },
+                    { text: "跟一两个好朋友小聚", score: 3 },
+                    { text: "一个人最舒服", score: 2 },
+                    { text: "社交等于消耗，能不社交就不社交", score: 1 }
+                ]
+            },
+            {
+                q: "别人跟你吐槽烦心事，你？",
+                options: [
+                    { text: "安慰达人，能说半小时不带重样", score: 5 },
+                    { text: "认真听，偶尔给点建议", score: 3 },
+                    { text: "不知道说啥，只会说「别难过了」", score: 2 },
+                    { text: "最怕别人吐槽，完全不知道怎么接", score: 1 }
+                ]
+            },
+            {
+                q: "你发消息对方没回，你会？",
+                options: [
+                    { text: "忘了，该干嘛干嘛", score: 5 },
+                    { text: "偶尔想一下，还好", score: 3 },
+                    { text: "反复看手机，是不是我说错话了", score: 2 },
+                    { text: "开始自我检讨，焦虑到不行", score: 1 }
+                ]
+            },
+            {
+                q: "团建/部门聚餐这种活动，你？",
+                options: [
+                    { text: "气氛组担当，最期待了", score: 5 },
+                    { text: "去也行，不去也无所谓", score: 3 },
+                    { text: "能不去就不去，去了也坐角落", score: 2 },
+                    { text: "提前一周就开始焦虑怎么请假", score: 1 }
+                ]
+            },
+            {
+                q: "聊天聊到冷场了，你？",
+                options: [
+                    { text: "立刻找到新话题，绝不冷场", score: 5 },
+                    { text: "尴尬几秒就找到新话题了", score: 3 },
+                    { text: "假装看手机掩饰尴尬", score: 2 },
+                    { text: "想找个地缝钻进去", score: 1 }
+                ]
+            },
+            {
+                q: "你的朋友圈子？",
+                options: [
+                    { text: "朋友遍天下，到处都是认识的人", score: 5 },
+                    { text: "有几个好朋友，也认识不少人", score: 3 },
+                    { text: "圈子很小，就那几个死党", score: 2 },
+                    { text: "社交圈约等于0，社恐不配有朋友", score: 1 }
+                ]
+            },
+            {
+                q: "跟人说话时你敢直视对方眼睛吗？",
+                options: [
+                    { text: "必须的，说话不看人不礼貌", score: 5 },
+                    { text: "大部分时候可以", score: 3 },
+                    { text: "经常闪躲，有点不自在", score: 2 },
+                    { text: "完全不敢，看一眼就慌", score: 1 }
+                ]
+            },
+            {
+                q: "去便利店买东西，结账时你？",
+                options: [
+                    { text: "能跟收银员唠两句", score: 5 },
+                    { text: "正常结账说谢谢", score: 3 },
+                    { text: "全程低头，扫码付款走人", score: 2 },
+                    { text: "自助结账万岁，不用说话最好", score: 1 }
+                ]
+            },
+            {
+                q: "有人在群里@你问问题，你？",
+                options: [
+                    { text: "秒回，顺便跟大家聊起来", score: 5 },
+                    { text: "看到就回，不拖沓", score: 3 },
+                    { text: "想想要怎么回，犹豫一会儿", score: 2 },
+                    { text: "能私发绝不群聊，群里说话太有压力", score: 1 }
+                ]
+            },
+            {
+                q: "如果给你的社交能力打个分，你选？",
+                options: [
+                    { text: "社交牛逼症，没我聊不起来的天", score: 5 },
+                    { text: "正常水平，该社交时能社交", score: 3 },
+                    { text: "有点社恐，但还能苟着", score: 2 },
+                    { text: "社恐晚期，已放弃治疗", score: 1 }
+                ]
+            }
+        ];
+        
+        var diseases = {
+            1: {
+                name: "社交失语症",
+                latin: "Social Aphasia",
+                emoji: "☠️",
+                severity: "重度 · 晚期",
+                quote: "不是不想说话，是真的不知道说什么。每次社交都像在裸奔，只想找个地缝钻进去。",
+                desc: "社交失语症，俗称「社恐晚期」，是一种严重的社交功能障碍。患者在社交场合中会出现大脑空白、语言功能暂时丧失、脚趾疯狂抠地等症状。\n\n患者并非天生沉默寡言，在熟悉的人面前可能是个话痨。但一旦进入陌生社交场景，语言系统直接宕机，只剩下「嗯」「啊」「好的」「谢谢」等基础词汇。\n\n据不完全统计，每5个年轻人中就有1个社交失语症患者，且发病人数逐年上升。专家表示：这病没法治，接受就好。",
+                symptoms: [
+                    "一到人多的地方，语言系统自动降级为基础模式",
+                    "心里想了一百句话，嘴上只能蹦出两个字",
+                    "聚会全程微笑点头，实则大脑一片空白",
+                    "被点名叫到名字能当场去世",
+                    "每次社交后都要复盘「刚才是不是说错话了」",
+                    "能打字绝不打电话，能发文字绝不发语音"
+                ],
+                advantages: [
+                    "内心世界极其丰富，一个人也能玩得很嗨",
+                    "观察力超强，别人注意不到的细节全能发现",
+                    "朋友不多但都是过命的交情",
+                    "倾听能力满分，朋友都喜欢找你吐槽",
+                    "专注度高，做事情不容易被打扰"
+                ],
+                prescription: [
+                    "放弃治疗，接受自己社恐的事实，社恐不丢人",
+                    "社交前提前备好「退场借口」，心里有底就不慌",
+                    "随身带手机，尴尬的时候假装很忙",
+                    "从小目标开始：今天主动跟一个人说句话",
+                    "找到你的「社安全词」，跟朋友约定好随时可以撤",
+                    "实在不想社交就不社交，你的能量很宝贵",
+                    "多跟社牛做朋友，他们会帮你把话说完"
+                ],
+                bestMatch: { emoji: "🗣️", name: "社交话痨症", desc: "对方负责说，你负责听，完美互补" },
+                worstMatch: { emoji: "☠️", name: "另一个失语症", desc: "两个人在一起，空气都会凝固" },
+                rarity: "约12%的人患有此病，属于较常见类型",
+                contagion: "无传染性。两个社恐在一起只会更社恐，不会互相治愈。"
+            },
+            2: {
+                name: "电话恐惧症",
+                latin: "Telephonophobia",
+                emoji: "📱",
+                severity: "中度 · 发展期",
+                quote: "电话铃声是世界上最恐怖的声音。看到来电的瞬间，心跳加速、手心出汗，只想把手机扔出去。",
+                desc: "电话恐惧症是当代年轻人的高发疾病。患者对语音通话有着本能的恐惧，电话铃声如同警报般刺激神经。\n\n患者并非讨厌交流，只是讨厌「即时性」——打电话需要立刻回应，没有思考时间，容易说错话。而文字消息可以反复斟酌，想好了再发。\n\n调查显示，超过60%的年轻人有不同程度的电话恐惧。症状严重者，连外卖和快递的电话都不敢接，全程靠短信沟通。",
+                symptoms: [
+                    "手机常年静音，电话全靠缘分接",
+                    "看到陌生来电，心跳瞬间加速",
+                    "能打字绝对不打电话，能发文字绝不发语音",
+                    "接电话前要深吸一口气，做心理建设",
+                    "挂了电话会长舒一口气，如释重负",
+                    "外卖/快递都备注「放门口，别打电话」"
+                ],
+                advantages: [
+                    "文字表达能力强，打字又快又好",
+                    "做事有条理，不喜欢突如其来的打扰",
+                    "专注力强，不会被电话打断思路",
+                    "更懂得尊重别人的时间",
+                    "心思细腻，说话前会先想清楚"
+                ],
+                prescription: [
+                    "把手机调成静音，世界瞬间清净了",
+                    "重要电话提前约时间，给自己留心理建设时间",
+                    "接电话前先喝口水，深呼吸三下",
+                    "实在不想接就挂掉，发消息问「怎么了？」",
+                    "外卖快递一律备注「放门口，发短信」",
+                    "不用强迫自己接电话，不接电话不犯法",
+                    "找个帮你接电话的社牛朋友"
+                ],
+                bestMatch: { emoji: "🚀", name: "社交永动症", desc: "对方负责接打电话，你负责发消息" },
+                worstMatch: { emoji: "📱", name: "另一个电话恐惧症", desc: "两个人永远靠文字交流，打个电话像渡劫" },
+                rarity: "约25%的人患有此病，是最常见的社交病之一",
+                contagion: "轻度传染。跟电话恐惧症患者待久了，你也会开始讨厌打电话。"
+            },
+            3: {
+                name: "牛杂摇摆症",
+                latin: "Mixed Social Disorder",
+                emoji: "🎭",
+                severity: "中度 · 波动型",
+                quote: "在社恐和社牛之间反复横跳。今天能跟陌生人聊半小时，明天连出门买东西都不敢。状态随机，本人也预测不了。",
+                desc: "牛杂摇摆症，俗称「社交牛杂症」，是一种社交状态不稳定的疾病。患者的社交能力像过山车，时高时低，完全看状态。\n\n跟陌生人在一起：安静害羞小透明。跟好朋友在一起：哈哈哈哈疯批本批。患者本人也搞不懂为什么差距这么大，可能要看当天的天气、心情、睡眠质量、以及对方是不是合眼缘。\n\n超过一半的年轻人认为自己是「牛杂」，这说明——牛杂才是常态，纯社恐和纯社牛都是稀有品种。",
+                symptoms: [
+                    "社交状态不稳定，时好时坏",
+                    "跟熟人在一起是话痨，跟陌生人是哑巴",
+                    "有时候很想社交，有时候谁都不想理",
+                    "状态好的时候是社牛，状态差的时候是社恐",
+                    "自己都不知道今天开的是哪个号",
+                    "被说「你怎么跟我想的不一样」"
+                ],
+                advantages: [
+                    "适应能力强，既能热闹也能安静",
+                    "跟谁都能处得来，人缘通常不错",
+                    "既有深度又能嗨，朋友觉得你很有趣",
+                    "社交弹性大，什么场合都能应付",
+                    "真实不做作，不同状态都是你"
+                ],
+                prescription: [
+                    "接受自己的牛杂属性，这很正常，不是病",
+                    "重要场合提前「预热」，让社牛人格上线",
+                    "社恐发作的时候别硬撑，找个借口歇会儿",
+                    "跟好朋友在一起就尽情放飞，不用装",
+                    "不用逼自己一直社牛，累了就歇",
+                    "牛杂才是常态，纯社恐纯社牛都是少数",
+                    "找到能让你快速切换状态的小技巧"
+                ],
+                bestMatch: { emoji: "🎬", name: "表演型人格", desc: "都是演技派，互相懂对方的切换节奏" },
+                worstMatch: { emoji: "☠️", name: "社交失语症", desc: "你嗨的时候对方社恐，你社恐的时候对方更恐" },
+                rarity: "约35%的人患有此病，是发病人数最多的类型",
+                contagion: "高度传染。跟牛杂患者在一起，你也会变得忽社恐忽社牛。"
+            },
+            4: {
+                name: "对视逃避症",
+                latin: "Eye Contact Phobia",
+                emoji: "👁️",
+                severity: "轻度 · 常见",
+                quote: "跟人说话时眼睛不知道看哪。看鼻子吧不礼貌，看眼睛吧心虚，看天花板吧像个傻子。",
+                desc: "对视逃避症是一种轻度社交障碍。患者在与人交谈时无法自然地进行眼神交流，总是下意识地躲避对方的目光。\n\n患者并非不尊重对方，只是眼神接触会让他们感到紧张和不自在。看对方眼睛时，大脑会一片空白，连话都说不利索。\n\n为了掩饰这个问题，患者发明了各种技巧：看对方的眉心、看对方的鼻子、看自己的鞋子、看周围的风景……就是不敢看眼睛。",
+                symptoms: [
+                    "说话时眼神飘来飘去，就是不看对方眼睛",
+                    "一对视就紧张，说话都结巴",
+                    "跟人说话时在心里数「看三秒移开一次」",
+                    "网上聊天打字飞快，视频通话就不行",
+                    "被盯着看会浑身不自在",
+                    "经常被说「你看着我说话啊」"
+                ],
+                advantages: [
+                    "观察力强，能注意到很多细节",
+                    "内心细腻敏感，共情能力强",
+                    "做事认真专注，不容易分心",
+                    "善于倾听，给人感觉很可靠",
+                    "不喜欢冲突，性格比较温和"
+                ],
+                prescription: [
+                    "看对方眉心/鼻梁，对方以为你在看眼睛",
+                    "听的时候可以适当移开视线，说话时再看回去",
+                    "先从熟悉的人开始练习眼神交流",
+                    "不用逼自己一直对视，偶尔移开很正常",
+                    "视频通话比面对面容易，先从视频练起",
+                    "戴眼镜能增加安全感（物理防御）",
+                    "实在不行就看对方的嘴，也挺礼貌的"
+                ],
+                bestMatch: { emoji: "🗣️", name: "社交话痨症", desc: "对方只顾着说话，不会注意到你有没有看ta" },
+                worstMatch: { emoji: "👁️", name: "另一个对视逃避症", desc: "两个人都不看对方，像在跟空气说话" },
+                rarity: "约20%的人患有此病，比较常见",
+                contagion: "不传染。对视逃避是个人习惯，不会传染给别人。"
+            },
+            5: {
+                name: "表演型人格",
+                latin: "Social Performance Disorder",
+                emoji: "🎬",
+                severity: "中度 · 伪装型",
+                quote: "表面稳如老狗，内心慌得一批。社交全靠演技，散场后需要独处三天充电。成年人的体面，全靠撑着。",
+                desc: "表演型人格，又称「社交表演家」，患者表面上看起来能说会道、落落大方，但内心其实慌得一批。\n\n每次社交都是一场表演。该打招呼打招呼，该寒暄寒暄，该活跃气氛活跃气氛——不是真的社牛，是演技好。\n\n患者就像一块电池，社交的时候疯狂耗电，独处的时候慢慢充电。虽然累，但患者深知，这就是成年人的社交生存法则。",
+                symptoms: [
+                    "表面上看很会社交，其实内心很累",
+                    "社交全靠演技，没人知道你真实的样子",
+                    "社交后需要独处很久才能恢复电量",
+                    "有时候演着演着自己都信了",
+                    "戴着面具久了，不知道真实的自己是什么样",
+                    "别人觉得你外向，但你其实很宅"
+                ],
+                advantages: [
+                    "社交能力强，各种场合都能应付",
+                    "情商高，会说话，很招人喜欢",
+                    "靠谱，给人感觉很可靠",
+                    "适应能力强，什么环境都能融入",
+                    "内心有深度，不是只会瞎聊的人"
+                ],
+                prescription: [
+                    "不用每次都演满分，偶尔掉线也没关系",
+                    "给自己安排「充电时间」，社交后一定要独处回血",
+                    "找一两个可以「不演」的朋友",
+                    "不重要的场合可以摸鱼，不用全情投入",
+                    "你的演技是超能力，但别让超能力透支了你",
+                    "定期跟自己对话，别忘了真实的自己",
+                    "累了就歇，没人要求你一直社牛"
+                ],
+                bestMatch: { emoji: "🎭", name: "牛杂摇摆症", desc: "都是懂社交规则的人，互相理解" },
+                worstMatch: { emoji: "☠️", name: "社交失语症", desc: "你在演，对方在躲，两个人都累" },
+                rarity: "约10%的人患有此病，不算常见",
+                contagion: "不传染。演技是个人技能，学不来的。"
+            },
+            6: {
+                name: "人来疯综合症",
+                latin: "Crowd Excitement Syndrome",
+                emoji: "🤪",
+                severity: "轻度 · 亢奋型",
+                quote: "人越多越嗨，场面越大越兴奋。平时看起来挺正常的，一到聚会就放飞自我。第二天嗓子必哑，还会断片。",
+                desc: "人来疯综合症，患者平时看起来可能挺正常的，但一到人多的地方、一到聚会场合，就像被按了开关一样，瞬间放飞。\n\n人越多越兴奋，场面越大越嗨。你是聚会的气氛担当，冷场终结者。只要有你在，场子绝对热得起来。\n\n副作用是：第二天起床嗓子必哑，偶尔还会断片——「我昨天说啥了？？？」不过没关系，大家都习惯了，你就是大家的快乐源泉。",
+                symptoms: [
+                    "人越多越嗨，场面越大越兴奋",
+                    "平时正常，一到聚会就疯批",
+                    "聚会气氛组担当，冷场终结者",
+                    "第二天嗓子必哑",
+                    "偶尔会断片，忘记自己昨天说了啥",
+                    "朋友都说「有你在就不会无聊」"
+                ],
+                advantages: [
+                    "气氛组担当，有你在就不会冷场",
+                    "朋友多，人缘好，走到哪都有认识的人",
+                    "感染力强，能带动身边的人一起开心",
+                    "不怕生，跟谁都能很快熟起来",
+                    "活得很真实，不压抑自己"
+                ],
+                prescription: [
+                    "嗨的时候注意观察周围，不是所有人都跟你一样嗨",
+                    "学会「收」一点，有时候安静也是一种魅力",
+                    "重要场合提前打预防针，别太放飞",
+                    "多喝水，保护嗓子（划重点）",
+                    "嗨完第二天好好休息，别硬撑",
+                    "你的热情是天赋，不用刻意压抑",
+                    "找个能帮你「踩刹车」的朋友"
+                ],
+                bestMatch: { emoji: "👁️", name: "对视逃避症", desc: "你负责热闹，对方负责冷静，互补搭配" },
+                worstMatch: { emoji: "🗣️", name: "社交话痨症", desc: "两个话痨在一起，谁也插不上话" },
+                rarity: "约8%的人患有此病，不算多",
+                contagion: "高度传染。跟人来疯在一起，社恐也能被带嗨。"
+            },
+            7: {
+                name: "社交话痨症",
+                latin: "Social Logorrhea",
+                emoji: "🗣️",
+                severity: "轻度 · 话多型",
+                quote: "不说话会死星人。跟小区保安都能聊半小时，出租车司机的一生之敌。冷场？不存在的，有我在就不会安静。",
+                desc: "社交话痨症患者的嘴就像装了永动机，根本停不下来。从天气到人生，从明星八卦到国际局势，什么都能聊。\n\n患者跟谁都能聊得来——小区保安、出租车司机、外卖小哥、理发店Tony...总能找到话题，一聊就是半小时。\n\n朋友们又爱又恨：爱的是有你在不会冷场，恨的是你一开口就没别人说话的份了。",
+                symptoms: [
+                    "话特别多，一开口就停不下来",
+                    "跟谁都能聊，哪怕是完全陌生的人",
+                    "冷场了会第一个出来救场",
+                    "有时候说太快，脑子跟不上嘴",
+                    "经常说太多，事后后悔「刚才不该说的」",
+                    "朋友说「你话真多」"
+                ],
+                advantages: [
+                    "口才好，表达能力强",
+                    "朋友遍天下，去哪都有人认识",
+                    "乐观开朗，走到哪都能带来快乐",
+                    "机会多，人脉广",
+                    "自信大方，很有个人魅力"
+                ],
+                prescription: [
+                    "说话前先数3秒，想想有没有必要说",
+                    "多听别人说，给别人说话的机会",
+                    "学会闭嘴也是一种能力",
+                    "重要的话想好了再说，别不过脑子",
+                    "交几个深度的真心朋友，比泛泛之交重要",
+                    "你的说话能力是天赋，用对地方会很厉害",
+                    "试试「每天少说三句话」的练习"
+                ],
+                bestMatch: { emoji: "☠️", name: "社交失语症", desc: "你负责说，对方负责听，完美搭配" },
+                worstMatch: { emoji: "🗣️", name: "另一个话痨症", desc: "两个话痨在一起，比谁嗓门大" },
+                rarity: "约5%的人患有此病，属于稀有类型",
+                contagion: "中度传染。跟话痨待久了，你也会变得话多。"
+            },
+            8: {
+                name: "社交永动症",
+                latin: "Perpetual Social Motion",
+                emoji: "🚀",
+                severity: "轻度 · 能量型",
+                quote: "社交不是消耗，是充电。别人聚会完累得要死，你聚会完精神抖擞。越社交越有活力，不社交反而会枯萎。",
+                desc: "社交永动症是一种罕见的社交天赋。患者天生精力充沛，社交不仅不会消耗他们，反而会给他们充电。\n\n别人聚会完：累瘫了，需要独处三天。你聚会完：太开心了！下次什么时候？\n\n你是天生的社交达人，朋友圈的中心人物。社恐们最羡慕的人就是你——「如果我也能这么会社交就好了」。",
+                symptoms: [
+                    "越社交越精神，从不觉得累",
+                    "朋友多到记不住名字",
+                    "一个人待着会无聊到发霉",
+                    "周末行程排得满满的",
+                    "跟谁都能自来熟",
+                    "手机通讯录有几百个联系人"
+                ],
+                advantages: [
+                    "人脉极广，干什么都有人帮忙",
+                    "感染力强，天生的领导者",
+                    "乐观积极，充满正能量",
+                    "机会多，路子广",
+                    "口才好，擅长说服别人"
+                ],
+                prescription: [
+                    "偶尔也享受一下独处，一个人也有很多乐趣",
+                    "说话前先听，别光顾着自己说",
+                    "交几个能深入交流的真心朋友",
+                    "照顾一下身边社恐朋友的感受",
+                    "你的社交能力是超能力，用在对的地方会很厉害",
+                    "学会安静，沉默也是一种力量",
+                    "给社恐朋友多一点耐心"
+                ],
+                bestMatch: { emoji: "📱", name: "电话恐惧症", desc: "你负责打电话、打交道，对方负责文字沟通" },
+                worstMatch: { emoji: "🚀", name: "另一个永动症", desc: "两个永动机在一起，谁也停不下来" },
+                rarity: "仅约3%的人患有此病，非常稀有",
+                contagion: "轻度传染。跟永动症在一起，你会变得更爱社交，但不会变成永动机。"
+            },
+            9: {
+                name: "外卖备注依赖症",
+                latin: "Delivery Note Dependency",
+                emoji: "🥡",
+                severity: "轻度 · 普遍型",
+                quote: "外卖备注比毕业论文写得还认真。「放门口别打电话」「敲门三下就行」「不用敲门直接放」，每一个字都是社恐的倔强。",
+                desc: "外卖备注依赖症是当代社恐的标配疾病。患者点外卖时，在外卖备注上花费的心思比写论文还多。\n\n「放门口，别打电话，谢谢」、「不用敲门，直接放门口就行」、「送到了发消息就行，不用打电话」……每一个字都是社恐的倔强。\n\n对患者来说，跟外卖员说一句话都像上刑场。最好的配送就是——东西到了，人没见着，全程零交流。完美。",
+                symptoms: [
+                    "点外卖必写备注，而且写得很详细",
+                    "「放门口别打电话」是标准备注",
+                    "听到敲门声会紧张",
+                    "快递也要求放驿站/快递柜",
+                    "能线上解决的绝对不线下",
+                    "外卖员打电话过来会很烦"
+                ],
+                advantages: [
+                    "生活数字化程度高，很会用各种APP",
+                    "独立能力强，什么都能自己搞定",
+                    "善于文字表达，备注写得特别清楚",
+                    "不喜欢麻烦别人，也不喜欢被麻烦",
+                    "生活效率高，不用花时间寒暄"
+                ],
+                prescription: [
+                    "备注写清楚就好，不用有心理负担",
+                    "外卖员也不想打电话，大家都是社恐",
+                    "实在害怕就买个门口置物架，完美解决",
+                    "这不是病，是科技改变生活",
+                    "享受零接触购物的便利，没什么不好",
+                    "不用强迫自己「勇敢一点」，没必要",
+                    "给同样社恐的外卖员五星好评"
+                ],
+                bestMatch: { emoji: "🥡", name: "同款依赖症", desc: "两个人一起点外卖，备注能写小作文" },
+                worstMatch: { emoji: "🗣️", name: "社交话痨症", desc: "对方会跟外卖员聊起来，你会很崩溃" },
+                rarity: "约30%的人患有此病，非常普遍",
+                contagion: "高度传染。你身边只要有一个人这么干，你很快也会学会。"
+            },
+            10: {
+                name: "群聊潜水症",
+                latin: "Group Chat Diving Disorder",
+                emoji: "🏊",
+                severity: "轻度 · 潜水型",
+                quote: "群聊常年隐身，只看不说。表情包都存了几百个，但就是不发消息。你们聊，我看看就行。",
+                desc: "群聊潜水症患者在各种群里都处于「隐身」状态。他们每天刷群消息几百次，但发言次数为零。\n\n表情包存了一大堆，聊天记录比谁都清楚，但就是不说话。偶尔在群里说一句话，要反复编辑好几遍，发出去之后每隔两秒就看一次有没有人回复。\n\n患者的群聊等级：常年潜水，偶尔冒泡，发言必沉。他们不是不想说话，是觉得「好像也没什么必要说」。",
+                symptoms: [
+                    "群聊常年潜水，只看不说",
+                    "表情包存了一堆，但很少发",
+                    "偶尔发一句话要反复编辑",
+                    "发完消息每隔两秒就看一次回复",
+                    "自己发的消息没人回会很尴尬",
+                    "有什么事宁愿私发也不在群里说"
+                ],
+                advantages: [
+                    "信息掌握全面，什么瓜都吃得到",
+                    "观察力强，群里的动态全知道",
+                    "不轻易发言，说的话都比较靠谱",
+                    "不会说错话，不容易得罪人",
+                    "懂得倾听，朋友都愿意跟你私聊"
+                ],
+                prescription: [
+                    "潜水没什么不好，知道消息就行",
+                    "想发言就发，不想发就不发，不用有压力",
+                    "可以从发表情包开始，慢慢练习",
+                    "没人回也没关系，大家可能都在忙",
+                    "重要的事私聊，水群不用太认真",
+                    "潜水也是一种参与方式",
+                    "不用强迫自己活跃，做个安静的吃瓜群众也挺好"
+                ],
+                bestMatch: { emoji: "🗣️", name: "社交话痨症", desc: "对方负责活跃气氛，你负责吃瓜看戏" },
+                worstMatch: { emoji: "🏊", name: "另一个潜水症", desc: "两个潜水党在一个群里，群会凉掉" },
+                rarity: "约28%的人患有此病，非常普遍",
+                contagion: "高度传染。群里只要有几个潜水党，大家都会跟着潜水。"
+            }
+        };
+        
+        var currentQuestion = 0;
+        var totalScore = 0;
+        var resultType = 1;
+        
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(function(p) {
+                p.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        
+        function startQuiz() {
+            currentQuestion = 0;
+            totalScore = 0;
+            showQuestion();
+            showPage('quizPage');
+        }
+        
+        function showQuestion() {
+            var q = questions[currentQuestion];
+            var numStr = String(currentQuestion + 1).padStart(2, '0');
+            document.getElementById('currentNum').textContent = numStr;
+            document.getElementById('questionText').textContent = q.q;
+            
+            var progress = (currentQuestion / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            var container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            q.options.forEach(function(opt) {
+                var btn = document.createElement('button');
+                btn.className = 'option';
+                btn.textContent = opt.text;
+                btn.onclick = function() {
+                    selectOption(opt.score);
+                };
+                container.appendChild(btn);
+            });
+        }
+        
+        function selectOption(score) {
+            totalScore += score;
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                calculateResult();
+            }
+        }
+        
+        function calculateResult() {
+            var maxScore = questions.length * 5;
+            var percent = Math.round((totalScore / maxScore) * 100);
+            var socialPhobiaScore = 100 - percent + 3;
+            var finalScore = Math.max(5, Math.min(97, socialPhobiaScore));
+            
+            var type;
+            if (finalScore >= 85) {
+                type = 1;
+            } else if (finalScore >= 72) {
+                type = 2;
+            } else if (finalScore >= 58) {
+                type = 3;
+            } else if (finalScore >= 48) {
+                type = 4;
+            } else if (finalScore >= 38) {
+                type = 5;
+            } else if (finalScore >= 28) {
+                type = 6;
+            } else if (finalScore >= 18) {
+                type = 7;
+            } else {
+                type = 8;
+            }
+            
+            resultType = type;
+            var disease = diseases[type];
+            
+            document.getElementById('resultEmoji').textContent = disease.emoji;
+            document.getElementById('resultType').textContent = disease.name;
+            document.getElementById('resultLatin').textContent = disease.latin;
+            document.getElementById('resultSeverity').textContent = disease.severity;
+            document.getElementById('resultQuote').textContent = disease.quote;
+            document.getElementById('severityValue').textContent = finalScore + '%';
+            
+            setTimeout(function() {
+                document.getElementById('severityFill').style.width = finalScore + '%';
+            }, 300);
+            
+            var comorbidities = generateComorbidities(type, finalScore);
+            var tagsContainer = document.getElementById('comorbidities');
+            tagsContainer.innerHTML = comorbidities.map(function(c) {
+                return '<span class="disease-tag ' + (c.mild ? 'mild' : '') + '">' + c.name + '</span>';
+            }).join('');
+            
+            showPage('resultPage');
+        }
+        
+        function generateComorbidities(mainType, score) {
+            var all = [
+                { name: '电话恐惧症', mild: false },
+                { name: '对视逃避症', mild: false },
+                { name: '外卖备注依赖症', mild: true },
+                { name: '群聊潜水症', mild: true },
+                { name: '表演型人格', mild: false },
+                { name: '牛杂摇摆症', mild: false },
+                { name: '人来疯综合症', mild: true },
+                { name: '尬聊恐惧症', mild: true },
+                { name: '朋友圈延迟回复症', mild: true },
+                { name: '语音转文字依赖症', mild: true }
+            ];
+            
+            var shuffled = all.sort(function() { return Math.random() - 0.5; });
+            return shuffled.slice(0, 3 + Math.floor(Math.random() * 2));
+        }
+        
+        function showFullReport() {
+            var d = diseases[resultType];
+            
+            document.getElementById('fullEmoji').textContent = d.emoji;
+            document.getElementById('fullType').textContent = d.name;
+            document.getElementById('fullLatin').textContent = d.latin;
+            document.getElementById('fullSeverity').textContent = d.severity;
+            document.getElementById('fullDesc').innerHTML = d.desc.replace(/\n/g, '<br><br>');
+            
+            var symList = document.getElementById('fullSymptoms');
+            symList.innerHTML = d.symptoms.map(function(s) {
+                return '<li>' + s + '</li>';
+            }).join('');
+            
+            var advList = document.getElementById('fullAdvantages');
+            advList.innerHTML = d.advantages.map(function(a) {
+                return '<li>' + a + '</li>';
+            }).join('');
+            
+            var presList = document.getElementById('fullPrescription');
+            presList.innerHTML = d.prescription.map(function(p) {
+                return '<li>' + p + '</li>';
+            }).join('');
+            
+            document.getElementById('bestEmoji').textContent = d.bestMatch.emoji;
+            document.getElementById('bestName').textContent = d.bestMatch.name;
+            document.getElementById('bestDesc').textContent = d.bestMatch.desc;
+            
+            document.getElementById('worstEmoji').textContent = d.worstMatch.emoji;
+            document.getElementById('worstName').textContent = d.worstMatch.name;
+            document.getElementById('worstDesc').textContent = d.worstMatch.desc;
+            
+            document.getElementById('fullRarity').textContent = d.rarity;
+            document.getElementById('fullContagion').textContent = '传染风险：' + d.contagion;
+            
+            showPage('fullReportPage');
+        }
+        
+        function restartQuiz() {
+            currentQuestion = 0;
+            totalScore = 0;
+            showPage('startPage');
+        }
+    </script>
+</body>
+</html>
